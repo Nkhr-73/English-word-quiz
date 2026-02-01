@@ -1,104 +1,110 @@
-// ===== 共通 =====
-function loadQuizzes() {
-  return JSON.parse(localStorage.getItem("quizzes") || "[]");
-}
-
-function saveQuizzes(quizzes) {
-  localStorage.setItem("quizzes", JSON.stringify(quizzes));
-}
-
-// ===== 問題追加（make.html用）=====
-function addChoiceQuestion() {
-  const question = document.getElementById("q").value;
-  const a = document.getElementById("a").value;
-  const b = document.getElementById("b").value;
-  const c = document.getElementById("c").value;
-  const answer = document.getElementById("answer").value;
-
-  if (!question || !answer) {
-    alert("未入力あるぞ！");
-    return;
-  }
-
-  const quizzes = loadQuizzes();
-  quizzes.push({
-    type: "choice",
-    question,
-    choices: [a, b, c],
-    answer
-  });
-
-  saveQuizzes(quizzes);
-  alert("問題保存した！");
-}
-
-function addInputQuestion() {
-  const question = document.getElementById("iq").value;
-  const answer = document.getElementById("ianswer").value;
-
-  if (!question || !answer) {
-    alert("未入力あるぞ！");
-    return;
-  }
-
-  const quizzes = loadQuizzes();
-  quizzes.push({
-    type: "input",
-    question,
-    answer
-  });
-
-  saveQuizzes(quizzes);
-  alert("入力式問題保存！");
-}
-
-// ===== クイズ表示（quiz.html用）=====
+let quizzes = [];
 let current = 0;
-let score = 0;
-const quizzes = loadQuizzes();
 
-function showQuiz() {
-  if (quizzes.length === 0) {
-    document.body.innerHTML = "<h2>問題がありません</h2>";
+/* 起動時 */
+window.onload = () => {
+  const saved = localStorage.getItem("quizData");
+
+  if (!saved) {
+    showMessage("クイズが保存されていません");
     return;
   }
+
+  try {
+    quizzes = JSON.parse(saved);
+  } catch {
+    showMessage("クイズデータが壊れています");
+    return;
+  }
+
+  if (!Array.isArray(quizzes) || quizzes.length === 0) {
+    showMessage("クイズがありません");
+    return;
+  }
+
+  current = 0;
+  showQuiz();
+};
+
+/* 表示 */
+function showQuiz() {
+  const area = document.getElementById("quiz-area");
+  const nextBtn = document.getElementById("nextBtn");
+  nextBtn.style.display = "none";
 
   const q = quizzes[current];
-  const area = document.getElementById("quiz-area");
 
+  if (!q || !q.type || !q.question) {
+    area.innerHTML = "<p>問題データが不正です</p>";
+    return;
+  }
+
+  /* 選択式 */
   if (q.type === "choice") {
     area.innerHTML = `
-      <h2>${q.question}</h2>
+      <h2>Q${current + 1}. ${q.question}</h2>
       ${q.choices.map(c => `
-        <button onclick="checkAnswer('${c}')">${c}</button>
+        <button onclick="checkChoice('${c}')">${c}</button>
       `).join("")}
+      <p id="result"></p>
     `;
-  } else {
+  }
+
+  /* 入力式 */
+  if (q.type === "input") {
     area.innerHTML = `
-      <h2>${q.question}</h2>
-      <input id="userAnswer">
+      <h2>Q${current + 1}. ${q.question}</h2>
+      <input id="userInput">
       <button onclick="checkInput()">答える</button>
+      <p id="result"></p>
     `;
   }
 }
 
-function checkAnswer(choice) {
-  if (choice === quizzes[current].answer) score++;
-  next();
-}
+/* 選択式判定 */
+function checkChoice(choice) {
+  const q = quizzes[current];
+  const result = document.getElementById("result");
+  const nextBtn = document.getElementById("nextBtn");
 
-function checkInput() {
-  const val = document.getElementById("userAnswer").value;
-  if (val === quizzes[current].answer) score++;
-  next();
-}
-
-function next() {
-  current++;
-  if (current >= quizzes.length) {
-    document.getElementById("quiz-area").innerHTML =
-      `<h2>終了！スコア ${score}/${quizzes.length}</h2>`;
+  if (choice === q.answer) {
+    result.textContent = "⭕ 正解";
   } else {
-    showQuiz();
+    result.textContent = `❌ 不正解（正解：${q.answer}）`;
   }
+
+  nextBtn.style.display = "block";
+}
+
+/* 入力式判定 */
+function checkInput() {
+  const q = quizzes[current];
+  const user = document.getElementById("userInput").value.trim();
+  const result = document.getElementById("result");
+  const nextBtn = document.getElementById("nextBtn");
+
+  if (user === q.answer) {
+    result.textContent = "⭕ 正解";
+  } else {
+    result.textContent = `❌ 不正解（正解：${q.answer}）`;
+  }
+
+  nextBtn.style.display = "block";
+}
+
+/* 次の問題 */
+function nextQuiz() {
+  current++;
+
+  if (current >= quizzes.length) {
+    showMessage("🎉 全問終了！");
+    return;
+  }
+
+  showQuiz();
+}
+
+/* メッセージ表示 */
+function showMessage(msg) {
+  document.getElementById("quiz-area").innerHTML = `<p>${msg}</p>`;
 }
