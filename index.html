@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>クイズメーカー＆クイズ</title>
+  <title>  英単語暗記</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,11 +11,11 @@
 
 <!-- ===== 問題作成 ===== -->
 <section id="maker">
-  <h2>問題を作る</h2>
+  <h2>問題作成page</h2>
 
   <select id="type">
-    <option value="choice">選択式</option>
-    <option value="input">入力式</option>
+    <option value="choice">選択肢</option>
+    <option value="input">英単語式</option>
   </select><br><br>
 
   <input id="questionText" placeholder="問題文"><br><br>
@@ -35,8 +35,9 @@
   </div>
 
   <br>
+  <button onclick="saveQuiz()">保存</button>
   <button onclick="addQuestion()">問題を追加</button>
-  <button onclick="startQuiz()">この問題でクイズ開始</button>
+  <button onclick="startQuiz()">クイズ開始！</button>
 
   <p id="count"></p>
 </section>
