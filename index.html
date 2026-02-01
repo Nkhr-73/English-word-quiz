@@ -2,61 +2,57 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>入力式クイズ作成ページ</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-    }
-    input, button {
-      width: 80%;
-      margin: 8px;
-      padding: 10px;
-    }
-    pre {
-      background: #f4f4f4;
-      padding: 10px;
-      text-align: left;
-      white-space: pre-wrap;
-    }
-  </style>
+  <title>クイズメーカー＆クイズ</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>入力式クイズ 作成ページ</h1>
+<h1>クイズメーカー</h1>
 
-<input id="question" placeholder="問題文を入力">
-<input id="answer" placeholder="正解（複数OK・カンマ区切り）">
+<!-- ===== 問題作成 ===== -->
+<section id="maker">
+  <h2>問題を作る</h2>
 
-<button onclick="addQuiz()">問題を追加</button>
+  <select id="type">
+    <option value="choice">選択式</option>
+    <option value="input">入力式</option>
+  </select><br><br>
 
-<h2>生成されたデータ</h2>
-<pre id="output"></pre>
+  <input id="questionText" placeholder="問題文"><br><br>
 
-<script>
-let quizzes = [];
+  <!-- 選択式 -->
+  <div id="choiceArea">
+    <input class="choice" placeholder="選択肢1"><br>
+    <input class="choice" placeholder="選択肢2"><br>
+    <input class="choice" placeholder="選択肢3"><br>
+    <input class="choice" placeholder="選択肢4"><br>
+    <input id="answerChoice" placeholder="正解（番号 1〜4）"><br>
+  </div>
 
-function addQuiz() {
-  const q = document.getElementById("question").value;
-  const a = document.getElementById("answer").value
-    .split(",")
-    .map(v => v.trim())
-    .filter(v => v !== "");
+  <!-- 入力式 -->
+  <div id="inputArea" style="display:none;">
+    <input id="answerInput" placeholder="正解の答え">
+  </div>
 
-  if (!q || a.length === 0) {
-    alert("問題文と正解を入力して");
-    return;
-  }
+  <br>
+  <button onclick="addQuestion()">問題を追加</button>
+  <button onclick="startQuiz()">この問題でクイズ開始</button>
 
-  quizzes.push({ q: q, a: a });
+  <p id="count"></p>
+</section>
 
-  document.getElementById("output").textContent =
-    "const inputQuiz = " + JSON.stringify(quizzes, null, 2) + ";";
+<hr>
 
-  document.getElementById("question").value = "";
-  document.getElementById("answer").value = "";
-}
-</script>
+<!-- ===== クイズ回答 ===== -->
+<section id="quiz" style="display:none;">
+  <h2 id="qText"></h2>
+  <div id="answers"></div>
+  <input id="userInput" style="display:none;">
+  <br><br>
+  <button onclick="check()">決定</button>
+  <p id="result"></p>
+</section>
 
+<script src="script.js"></script>
 </body>
 </html>
