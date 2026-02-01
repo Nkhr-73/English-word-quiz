@@ -3,31 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>クイズに挑戦</title>
-  <link rel="stylesheet" href="quiz.js">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body>
   <h1>クイズ</h1>
-  <div id="quiz-area"></div>
 
+  <!-- ここに問題が表示される -->
+  <div id="quiz-area">
+    <p>読み込み中...</p>
+  </div>
+
+  <!-- 次へボタン -->
+  <button id="nextBtn" style="display:none;" onclick="nextQuiz()">次の問題</button>
+
+  <!-- JSは一番下 -->
   <script src="script.js"></script>
-</body>
-
-<h1>クイズに挑戦</h1>
-
-<section id="quiz">
-  <h2 id="qText"></h2>
-
-  <div id="answers"></div>
-
-  <input id="userInput" style="display:none;" placeholder="答えを入力">
-  <br><br>
-
-  <button id="decideBtn" onclick="check()">決定</button>
-  <p id="result"></p>
-</section>
-
-<button onclick="location.href='index.html'">ホームに戻る</button>
-
-<script src="quiz.js"></script>
 </body>
 </html>
