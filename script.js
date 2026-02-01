@@ -1,4 +1,4 @@
-let questions = [];
+let questions = JSON.parse(localStorage.getItem("quizData")) || [];
 let current = 0;
 
 const typeSelect = document.getElementById("type");
@@ -44,6 +44,7 @@ function addQuestion() {
     });
   }
 
+  localStorage.setItem("quizData", JSON.stringify(questions));
   document.getElementById("count").textContent =
     `問題数：${questions.length}`;
 }
@@ -101,4 +102,9 @@ function check(selected) {
     document.getElementById("qText").textContent = "終了！";
     document.getElementById("answers").innerHTML = "";
   }
+}
+
+function saveQuiz() {
+  localStorage.setItem("quizData", JSON.stringify(questions));
+  alert("保存しました");
 }
