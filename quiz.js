@@ -9,6 +9,13 @@ showQuestion();
 
 function showQuestion() {
   const q = questions[current];
+
+  if (!q || !q.q || !q.type) {
+    alert("問題データが壊れています");
+    return;
+  }
+
+  const q = questions[current];
   document.getElementById("qText").textContent = q.q;
   document.getElementById("result").textContent = "";
 
