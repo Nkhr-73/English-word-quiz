@@ -3,24 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>クイズ作成</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body>
-
-<h1>クイズ作成ページ</h1>
-
-<section id="maker">
-
-  <h2>問題を作る</h2>
+  <h1>クイズ作成</h1>
 
   <select id="type">
     <option value="choice">選択式</option>
     <option value="input">入力式</option>
   </select>
+
   <br><br>
 
-  <input id="questionText" placeholder="問題文">
-  <br><br>
+  <input id="question" placeholder="問題文"><br><br>
 
   <!-- 選択式 -->
   <div id="choiceArea">
@@ -28,28 +24,98 @@
     <input class="choice" placeholder="選択肢2"><br>
     <input class="choice" placeholder="選択肢3"><br>
     <input class="choice" placeholder="選択肢4"><br>
-    <input id="answerChoice" placeholder="正解の番号（1〜4）"><br>
+    <input id="answerChoice" placeholder="正解（そのまま入力）">
   </div>
 
   <!-- 入力式 -->
   <div id="inputArea" style="display:none;">
-    <input id="answerInput" placeholder="正解の答え">
+    <input id="answerInput" placeholder="正解">
   </div>
 
   <br>
   <button onclick="addQuestion()">問題を追加</button>
-  <button onclick="saveQuiz()">保存</button>
   <button onclick="clearQuiz()">全削除</button>
 
-  <p id="count"></p>
+  <p id="msg"></p>
 
-</section>
+  <script>
+    let quizzes = JSON.parse(localStorage.getItem("quizData")) || [];
 
-<hr>
+    const typeSelect = document.getElementById("type");
+    const choiceArea = document.getElementById("choiceArea");
+    const inputArea = document.getElementById("inputArea");
 
-<button onclick="location.href='quiz.html'">クイズを解く</button>
-<button onclick="location.href='index.html'">ホームへ</button>
+    typeSelect.onchange = () => {
+      if (typeSelect.value === "choice") {
+        choiceArea.style.display = "block";
+        inputArea.style.display = "none";
+      } else {
+        choiceArea.style.display = "none";
+        inputArea.style.display = "block";
+      }
+    };
 
-<script src="script.js"></script>
+    function addQuestion() {
+      const type = typeSelect.value;
+      const question = document.getElementById("question").value.trim();
+
+      if (!question) {
+        showMsg("問題文が空");
+        return;
+      }
+
+      /* 選択式 */
+      if (type === "choice") {
+        const choices = [...document.querySelectorAll(".choice")]
+          .map(c => c.value.trim())
+          .filter(c => c);
+
+        const answer = document.getElementById("answerChoice").value.trim();
+
+        if (choices.length < 2 || !answer) {
+          showMsg("選択肢か正解が足りない");
+          return;
+        }
+
+        quizzes.push({
+          type: "choice",
+          question,
+          choices,
+          answer
+        });
+      }
+
+      /* 入力式 */
+      if (type === "input") {
+        const answer = document.getElementById("answerInput").value.trim();
+
+        if (!answer) {
+          showMsg("正解が空");
+          return;
+        }
+
+        quizzes.push({
+          type: "input",
+          question,
+          answer
+        });
+      }
+
+      localStorage.setItem("quizData", JSON.stringify(quizzes));
+      showMsg("保存しました");
+
+      document.querySelectorAll("input").forEach(i => i.value = "");
+    }
+
+    function clearQuiz() {
+      localStorage.removeItem("quizData");
+      quizzes = [];
+      showMsg("全削除しました");
+    }
+
+    function showMsg(text) {
+      document.getElementById("msg").textContent = text;
+    }
+  </script>
 </body>
 </html>
