@@ -1,63 +1,104 @@
-let questions = JSON.parse(localStorage.getItem("quizData")) || [];
-
-const typeSelect = document.getElementById("type");
-const choiceArea = document.getElementById("choiceArea");
-const inputArea = document.getElementById("inputArea");
-const count = document.getElementById("count");
-
-count.textContent = `保存中の問題数：${questions.length}`;
-
-typeSelect.onchange = () => {
-  if (typeSelect.value === "choice") {
-    choiceArea.style.display = "block";
-    inputArea.style.display = "none";
-  } else {
-    choiceArea.style.display = "none";
-    inputArea.style.display = "block";
-  }
-};
-
-function addQuestion() {
-  const type = typeSelect.value;
-  const q = document.getElementById("questionText").value;
-
-  if (!q) return alert("問題文が空");
-
-  if (type === "choice") {
-    const choices = [...document.querySelectorAll(".choice")].map(c => c.value);
-    const ansNum = document.getElementById("answerChoice").value;
-
-    if (choices.includes("") || !ansNum) return alert("未入力あり");
-
-    questions.push({
-      type: "choice",
-      q,
-      choices,
-      answer: choices[ansNum - 1]
-    });
-  } else {
-    const ans = document.getElementById("answerInput").value;
-    if (!ans) return alert("答えが空");
-
-    questions.push({
-      type: "input",
-      q,
-      answer: ans
-    });
-  }
-
-  saveQuiz();
-  count.textContent = `保存中の問題数：${questions.length}`;
+// ===== 共通 =====
+function loadQuizzes() {
+  return JSON.parse(localStorage.getItem("quizzes") || "[]");
 }
 
-function saveQuiz() {
-  localStorage.setItem("quizData", JSON.stringify(questions));
-  alert("保存しました");
+function saveQuizzes(quizzes) {
+  localStorage.setItem("quizzes", JSON.stringify(quizzes));
 }
 
-function clearQuiz() {
-  if (!confirm("全部消すけどいい？")) return;
-  localStorage.removeItem("quizData");
-  questions = [];
-  location.reload();
+// ===== 問題追加（make.html用）=====
+function addChoiceQuestion() {
+  const question = document.getElementById("q").value;
+  const a = document.getElementById("a").value;
+  const b = document.getElementById("b").value;
+  const c = document.getElementById("c").value;
+  const answer = document.getElementById("answer").value;
+
+  if (!question || !answer) {
+    alert("未入力あるぞ！");
+    return;
+  }
+
+  const quizzes = loadQuizzes();
+  quizzes.push({
+    type: "choice",
+    question,
+    choices: [a, b, c],
+    answer
+  });
+
+  saveQuizzes(quizzes);
+  alert("問題保存した！");
+}
+
+function addInputQuestion() {
+  const question = document.getElementById("iq").value;
+  const answer = document.getElementById("ianswer").value;
+
+  if (!question || !answer) {
+    alert("未入力あるぞ！");
+    return;
+  }
+
+  const quizzes = loadQuizzes();
+  quizzes.push({
+    type: "input",
+    question,
+    answer
+  });
+
+  saveQuizzes(quizzes);
+  alert("入力式問題保存！");
+}
+
+// ===== クイズ表示（quiz.html用）=====
+let current = 0;
+let score = 0;
+const quizzes = loadQuizzes();
+
+function showQuiz() {
+  if (quizzes.length === 0) {
+    document.body.innerHTML = "<h2>問題がありません</h2>";
+    return;
+  }
+
+  const q = quizzes[current];
+  const area = document.getElementById("quiz-area");
+
+  if (q.type === "choice") {
+    area.innerHTML = `
+      <h2>${q.question}</h2>
+      ${q.choices.map(c => `
+        <button onclick="checkAnswer('${c}')">${c}</button>
+      `).join("")}
+    `;
+  } else {
+    area.innerHTML = `
+      <h2>${q.question}</h2>
+      <input id="userAnswer">
+      <button onclick="checkInput()">答える</button>
+    `;
+  }
+}
+
+function checkAnswer(choice) {
+  if (choice === quizzes[current].answer) score++;
+  next();
+}
+
+function checkInput() {
+  const val = document.getElementById("userAnswer").value;
+  if (val === quizzes[current].answer) score++;
+  next();
+}
+
+function next() {
+  current++;
+  if (current >= quizzes.length) {
+    document.getElementById("quiz-area").innerHTML =
+      `<h2>終了！スコア ${score}/${quizzes.length}</h2>`;
+  } else {
+    showQuiz();
+  }
 }
