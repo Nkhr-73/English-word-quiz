@@ -106,5 +106,12 @@ function check(selected) {
 
 function saveQuiz() {
   localStorage.setItem("quizData", JSON.stringify(questions));
+function clearQuiz() {
+  if (!confirm("全てのデータが削除されます。本当にいいですか？")) return;
+  localStorage.removeItem("quizData");
+  questions = [];
+  location.reload();
+}
+
   alert("保存しました");
 }
