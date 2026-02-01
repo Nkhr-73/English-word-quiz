@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>クイズ作成</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>クイズ作成ページ</h1>
+
+<section id="maker">
+
+  <h2>問題を作る</h2>
+
+  <select id="type">
+    <option value="choice">選択式</option>
+    <option value="input">入力式</option>
+  </select>
+  <br><br>
+
+  <input id="questionText" placeholder="問題文">
+  <br><br>
+
+  <!-- 選択式 -->
+  <div id="choiceArea">
+    <input class="choice" placeholder="選択肢1"><br>
+    <input class="choice" placeholder="選択肢2"><br>
+    <input class="choice" placeholder="選択肢3"><br>
+    <input class="choice" placeholder="選択肢4"><br>
+    <input id="answerChoice" placeholder="正解の番号（1〜4）"><br>
+  </div>
+
+  <!-- 入力式 -->
+  <div id="inputArea" style="display:none;">
+    <input id="answerInput" placeholder="正解の答え">
+  </div>
+
+  <br>
+  <button onclick="addQuestion()">問題を追加</button>
+  <button onclick="saveQuiz()">保存</button>
+  <button onclick="clearQuiz()">全削除</button>
+
+  <p id="count"></p>
+
+</section>
+
+<hr>
+
+<button onclick="location.href='quiz.html'">クイズを解く</button>
+<button onclick="location.href='index.html'">ホームへ</button>
+
+<script src="script.js"></script>
+</body>
+</html>
