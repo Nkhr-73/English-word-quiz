@@ -1,117 +1,28 @@
-let questions = JSON.parse(localStorage.getItem("quizData")) || [];
-let current = 0;
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>クイズ回答</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-const typeSelect = document.getElementById("type");
-const choiceArea = document.getElementById("choiceArea");
-const inputArea = document.getElementById("inputArea");
+<h1>クイズに挑戦</h1>
 
-typeSelect.onchange = () => {
-  if (typeSelect.value === "choice") {
-    choiceArea.style.display = "block";
-    inputArea.style.display = "none";
-  } else {
-    choiceArea.style.display = "none";
-    inputArea.style.display = "block";
-  }
-};
+<section id="quiz">
+  <h2 id="qText"></h2>
 
-function addQuestion() {
-  const type = typeSelect.value;
-  const q = document.getElementById("questionText").value;
+  <div id="answers"></div>
 
-  if (!q) return alert("問題文が空");
+  <input id="userInput" style="display:none;">
+  <br><br>
 
-  if (type === "choice") {
-    const choices = [...document.querySelectorAll(".choice")].map(c => c.value);
-    const ansNum = document.getElementById("answerChoice").value;
+  <button id="decideBtn" onclick="check()">決定</button>
+  <p id="result"></p>
+</section>
 
-    if (choices.includes("") || !ansNum) return alert("未入力あり");
+<button onclick="location.href='index.html'">ホームに戻る</button>
 
-    questions.push({
-      type: "choice",
-      q,
-      choices,
-      answer: choices[ansNum - 1]
-    });
-  } else {
-    const ans = document.getElementById("answerInput").value;
-    if (!ans) return alert("答えが空");
-
-    questions.push({
-      type: "input",
-      q,
-      answer: ans
-    });
-  }
-
-  localStorage.setItem("quizData", JSON.stringify(questions));
-  document.getElementById("count").textContent =
-    `問題数：${questions.length}`;
-}
-
-function startQuiz() {
-  if (questions.length === 0) return alert("問題がない");
-
-  document.getElementById("maker").style.display = "none";
-  document.getElementById("quiz").style.display = "block";
-  showQuestion();
-}
-
-function showQuestion() {
-  const q = questions[current];
-  document.getElementById("qText").textContent = q.q;
-  document.getElementById("result").textContent = "";
-
-  const answers = document.getElementById("answers");
-  const userInput = document.getElementById("userInput");
-
-  answers.innerHTML = "";
-  userInput.style.display = "none";
-
-  if (q.type === "choice") {
-    q.choices.forEach(c => {
-      const btn = document.createElement("button");
-      btn.textContent = c;
-      btn.onclick = () => check(c);
-      answers.appendChild(btn);
-    });
-  } else {
-    userInput.value = "";
-    userInput.style.display = "block";
-  }
-}
-
-function check(selected) {
-  const q = questions[current];
-  let correct;
-
-  if (q.type === "choice") {
-    correct = selected === q.answer;
-  } else {
-    const input = document.getElementById("userInput").value;
-    correct = input === q.answer;
-  }
-
-  document.getElementById("result").textContent =
-    correct ? "⭕ 正解！" : `❌ 不正解（答え：${q.answer}）`;
-
-  current++;
-  if (current < questions.length) {
-    setTimeout(showQuestion, 1000);
-  } else {
-    document.getElementById("qText").textContent = "終了！";
-    document.getElementById("answers").innerHTML = "";
-  }
-}
-
-function saveQuiz() {
-  localStorage.setItem("quizData", JSON.stringify(questions));
-function clearQuiz() {
-  if (!confirm("全てのデータが削除されます。本当にいいですか？")) return;
-  localStorage.removeItem("quizData");
-  questions = [];
-  location.reload();
-}
-
-  alert("保存しました");
-}
+<script src="quiz.js"></script>
+</body>
+</html>
