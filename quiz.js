@@ -49,7 +49,6 @@ function check(selected) {
     correct ? "⭕ 正解！" : `❌ 不正解（答え：${q.answer}）`;
 
   current++;
-
   if (current < questions.length) {
     setTimeout(showQuestion, 1000);
   } else {
@@ -58,4 +57,3 @@ function check(selected) {
     document.getElementById("decideBtn").style.display = "none";
   }
 }
-
