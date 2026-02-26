@@ -1,26 +1,70 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>ようこそ。今日も勉強しましょう</title>
-  <link rel="stylesheet" href="style.css">
+ <style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  background: #f2f2f7;
+}
+
+.container {
+  max-width: 500px;
+  margin: 60px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+h1 {
+  font-weight: 600;
+  margin-bottom: 40px;
+}
+
+.ios-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 18px;
+  border: none;
+  font-size: 17px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: 0.15s;
+}
+
+.ios-btn:active {
+  transform: scale(0.97);
+}
+
+.primary {
+  background: #007aff;
+  color: white;
+}
+
+.secondary {
+  background: white;
+  color: black;
+}
+</style>
 </head>
 <body>
 
-<h1>英単語クイズ</h1>
+<div class="container">
 
-<button onclick="location.href='make.html'">
-  問題を作る
-</button>
+<h1>My Quiz App</h1>
 
-<button onclick="location.href='quiz.html'">
-  クイズを解く
-</button>
+<a href="quiz.html">
+  <button class="ios-btn primary">quiz start!!</button>
+</a>
 
-<button onclick="location.href='edit.html'">
-  クイズを編集する
-</button>
+<a href="make.html">
+  <button class="ios-btn secondary">make quiz</button>
+</a>
 
+<a href="edit.html">
+  <button class="ios-btn secondary">edit quiz</button>
+</a>
 
+</div>
 </body>
 </html>
