@@ -51,7 +51,7 @@ button {
 <div id="questionList"></div>
 
 <script>
-let questions = JSON.parse(localStorage.getItem("questions")) || [];
+let questions = JSON.parse(localStorage.getItem("quizData")) || [];
 
 function saveQuestions() {
   localStorage.setItem("questions", JSON.stringify(questions));
