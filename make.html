@@ -1,126 +1,117 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>クイズ作成</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>問題作成</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  background: #f2f2f7;
+}
+
+.container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+h1 {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  border-radius: 18px;
+  border: none;
+  font-size: 17px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: 0.15s;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.primary {
+  background: #007aff;
+  color: white;
+}
+
+.secondary {
+  background: white;
+  margin-bottom: 16px;
+}
+</style>
 </head>
 
 <body>
-  <h1>クイズ作成</h1>
 
-  <select id="type">
-    <option value="choice">選択式</option>
-    <option value="input">入力式</option>
-  </select>
+<div class="container">
 
-  <br><br>
+<h1>問題作成</h1>
 
-  <input id="question" placeholder="問題文"><br><br>
+<a href="index.html">
+  <button class="secondary">← ホームへ戻る</button>
+</a>
 
-  <!-- 選択式 -->
-  <div id="choiceArea">
-    <input class="choice" placeholder="選択肢1"><br>
-    <input class="choice" placeholder="選択肢2"><br>
-    <input class="choice" placeholder="選択肢3"><br>
-    <input class="choice" placeholder="選択肢4"><br>
-    <input id="answerChoice" placeholder="正解（そのまま入力）">
-  </div>
+<div class="card">
 
-  <!-- 入力式 -->
-  <div id="inputArea" style="display:none;">
-    <input id="answerInput" placeholder="正解">
-  </div>
+<input type="text" id="questionInput" placeholder="問題文を入力">
+<input type="text" id="answerInput" placeholder="答えを入力">
 
-  <br>
-  <button type="button" onclick="addQuestion()">問題を追加</button>
-　<button type="button" onclick="clearQuiz()">全削除</button>
-
+<button class="primary" onclick="saveQuestion()">
+  保存する
 </button>
 
-  <p id="msg"></p>
+</div>
 
-  <script>
-    let quizzes = JSON.parse(localStorage.getItem("quizData")) || [];
+</div>
 
-    const typeSelect = document.getElementById("type");
-    const choiceArea = document.getElementById("choiceArea");
-    const inputArea = document.getElementById("inputArea");
+<script>
+let questions = JSON.parse(localStorage.getItem("questions")) || [];
 
-    typeSelect.onchange = () => {
-      if (typeSelect.value === "choice") {
-        choiceArea.style.display = "block";
-        inputArea.style.display = "none";
-      } else {
-        choiceArea.style.display = "none";
-        inputArea.style.display = "block";
-      }
-    };
+function saveQuestion() {
+  const question = document.getElementById("questionInput").value;
+  const answer = document.getElementById("answerInput").value;
 
-    function addQuestion() {
-      const type = typeSelect.value;
-      const question = document.getElementById("question").value.trim();
+  if (!question || !answer) {
+    alert("両方入力して");
+    return;
+  }
 
-      if (!question) {
-        showMsg("問題文が空");
-        return;
-      }
+  questions.push({ question, answer });
+  localStorage.setItem("questions", JSON.stringify(questions));
 
-      /* 選択式 */
-      if (type === "choice") {
-        const choices = [...document.querySelectorAll(".choice")]
-          .map(c => c.value.trim())
-          .filter(c => c);
+  document.getElementById("questionInput").value = "";
+  document.getElementById("answerInput").value = "";
 
-        const answer = document.getElementById("answerChoice").value.trim();
+  alert("保存しました");
+}
+</script>
 
-        if (choices.length < 2 || !answer) {
-          showMsg("選択肢か正解が足りない");
-          return;
-        }
-
-        quizzes.push({
-          type: "choice",
-          question,
-          choices,
-          answer
-        });
-      }
-
-      /* 入力式 */
-      if (type === "input") {
-        const answer = document.getElementById("answerInput").value.trim();
-
-        if (!answer) {
-          showMsg("正解が空");
-          return;
-        }
-
-        quizzes.push({
-          type: "input",
-          question,
-          answer
-        });
-      }
-
-      localStorage.setItem("quizData", JSON.stringify(quizzes));
-      showMsg("保存しました");
-
-      document.querySelectorAll("input").forEach(i => i.value = "");
-    }
-
-    function clearQuiz() {
-      localStorage.removeItem("quizData");
-      quizzes = [];
-      showMsg("全削除しました");
-    }
-
-    function showMsg(text) {
-      document.getElementById("msg").textContent = text;
-    }
-  </script>
-  <a href="index.html">
-  <button>ホームへ戻る</button>
-</a>
 </body>
 </html>
