@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>問題編集</title>
+
+<style>
+body {
+  font-family: sans-serif;
+  max-width: 700px;
+  margin: 40px auto;
+  background: #f4f4f4;
+}
+
+h1 {
+  text-align: center;
+}
+
+.question-box {
+  background: white;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 10px;
+}
+
+.question-box strong {
+  font-size: 18px;
+}
+
+.home-btn {
+  margin-bottom: 20px;
+}
+</style>
+</head>
+<body>
+
+<h1>問題編集ページ</h1>
+
+<a href="index.html">
+  <button class="home-btn">← ホームへ戻る</button>
+</a>
+
+<div id="questionList"></div>
+
+<script>
+let questions = JSON.parse(localStorage.getItem("questions")) || [];
+
+function renderQuestions() {
+  const list = document.getElementById("questionList");
+  list.innerHTML = "";
+
+  if (questions.length === 0) {
+    list.innerHTML = "<p>問題がまだありません。</p>";
+    return;
+  }
+
+  questions.forEach((q, index) => {
+    list.innerHTML += `
+      <div class="question-box">
+        <strong>問題 ${index + 1}</strong><br>
+        問題文：${q.question}<br>
+        答え：${q.answer}
+      </div>
+    `;
+  });
+}
+
+renderQuestions();
+</script>
+
+</body>
+</html>
