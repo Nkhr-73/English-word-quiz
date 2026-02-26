@@ -144,9 +144,10 @@ function renderQuestions() {
 function deleteQuestion(index) {
   if (!confirm("本当に削除する？")) return;
 
-  questions.splice(index, 1);
-  saveQuestions();
-  renderQuestions();
+  questions.splice(index, 1);  // 
+  localStorage.setItem("questions", JSON.stringify(questions)); // 
+  renderQuestions(); //
+}
 }
 
 renderQuestions();
