@@ -13,9 +13,7 @@ body {
   background: #f4f4f4;
 }
 
-h1 {
-  text-align: center;
-}
+h1 { text-align: center; }
 
 .question-box {
   background: white;
@@ -24,12 +22,21 @@ h1 {
   border-radius: 10px;
 }
 
-.question-box strong {
-  font-size: 18px;
+button {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
 }
 
-.home-btn {
-  margin-bottom: 20px;
+.delete-btn {
+  background: crimson;
+  color: white;
+}
+
+.delete-btn:hover {
+  opacity: 0.8;
 }
 </style>
 </head>
@@ -38,13 +45,17 @@ h1 {
 <h1>問題編集ページ</h1>
 
 <a href="index.html">
-  <button class="home-btn">← ホームへ戻る</button>
+  <button>← ホームへ戻る</button>
 </a>
 
 <div id="questionList"></div>
 
 <script>
 let questions = JSON.parse(localStorage.getItem("questions")) || [];
+
+function saveQuestions() {
+  localStorage.setItem("questions", JSON.stringify(questions));
+}
 
 function renderQuestions() {
   const list = document.getElementById("questionList");
@@ -60,10 +71,21 @@ function renderQuestions() {
       <div class="question-box">
         <strong>問題 ${index + 1}</strong><br>
         問題文：${q.question}<br>
-        答え：${q.answer}
+        答え：${q.answer}<br>
+        <button class="delete-btn" onclick="deleteQuestion(${index})">
+          削除
+        </button>
       </div>
     `;
   });
+}
+
+function deleteQuestion(index) {
+  if (!confirm("本当に削除する？")) return;
+
+  questions.splice(index, 1);
+  saveQuestions();
+  renderQuestions();
 }
 
 renderQuestions();
