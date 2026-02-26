@@ -103,6 +103,7 @@ button {
 </head>
 <body>
 
+
 <h1>問題編集ページ</h1>
 
 <a href="index.html">
@@ -112,6 +113,8 @@ button {
 <div id="questionList"></div>
 
 <script>
+  console.log(localStorage);
+console.log(localStorage.getItem("questions"));
 let questions = JSON.parse(localStorage.getItem("quizData")) || [];
 
 function saveQuestions() {
